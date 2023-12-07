@@ -13,6 +13,7 @@ COLOR_DARK_GRAY="\033[38m"
 COLOR_NORMAL="\033[39m"
 
 
+
 function bcli_resolve_path() {
     if [ -x "$( which realpath )" ]
     then
@@ -42,6 +43,7 @@ function bcli_show_header() {
 function bcli_entrypoint() {
     local root_dir;
     root_dir=$(dirname "$(bcli_resolve_path "$0")")
+    alias cat="$root_dir/lib/ccat"
 
     local cli_entrypoint;
     cli_entrypoint=$(basename "$0")
@@ -126,6 +128,7 @@ function bcli_entrypoint() {
 function bcli_help() {
     local root_dir;
     root_dir=$(dirname "$(bcli_resolve_path "$0")")
+    alias cat="$root_dir/lib/ccat"
 
     local cli_entrypoint;
     cli_entrypoint=$(basename "$1")
@@ -135,6 +138,8 @@ function bcli_help() {
     if [ $# == 0 ]; then
         bcli_show_header "$root_dir/app"
     fi
+
+    ascii_art_path="$root_dir/app/.ascii_art"
 
     # Locate the correct level to display the helpfile for, either a directory
     # with no further arguments, or a command file.
@@ -150,7 +155,10 @@ function bcli_help() {
     # If we've got a directory's helpfile to show, then print out the list of
     # commands in that directory along with its help content.
     if [[ -d "$help_file" ]]; then
-        echo -e "${COLOR_GREEN}$cli_entrypoint ${COLOR_CYAN}${*:2:$((help_arg_start-1))} ${COLOR_NORMAL}"
+        # local cli_titleline;
+        # cli_titleline="${COLOR_YELLOW}\$\$\$-[[ ${COLOR_GREEN}$cli_entrypoint ${COLOR_YELLOW}- CLI ${COLOR_LIGHT_GRAY}(COMMAND-LINE-APPLICATION)${COLOR_YELLOW} ]]-\$\$\$\t\t\t${COLOR_YELLOW}${COLOR_GREEN}${COLOR_CYAN}${*:2:$((help_arg_start-1))}${COLOR_NORMAL}\n\t${COLOR_YELLOW}"
+        # echo -e "$cli_titleline"
+        cat "${ascii_art_path}_head"
 
         # If there's a help file available for this directory, then show it.
         if [[ -f "$help_file/.help" ]]; then
@@ -179,6 +187,8 @@ function bcli_help() {
                 fi
             fi
         done
+
+        cat "${ascii_art_path}_foot"
 
         exit 0
     fi

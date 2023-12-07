@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+reset 
+echo -e "\n"
 realpath() {
     if [ -x "$( which realpath )" ]
     then
